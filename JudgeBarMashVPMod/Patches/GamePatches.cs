@@ -19,11 +19,18 @@ namespace JudgeBarMashVPMod.Patches
         {
             private static void Postfix(JudgementEvent e)
             {
-                string line = $"{e.DeltaMs:F2} ms - {e.Judgement}";
-                JudgeBarMashVPMod.Core.PushJudgementLine(line);
-                Melon<Core>.Logger.Warning(line);
+                float delta = (float)e.DeltaMs;
+                if (e.Judgement != NoteJudgement.None || e.Judgement != NoteJudgement.Miss) {
+                    JudgeBarMashVPMod.Core.PushJudgementOffset(delta);
+                }
+
+                if (JudgeBarMashVPMod.Core.IsDebug)
+                {
+                    string line = $"{e.DeltaMs:F2} ms - {e.Judgement}";
+                    JudgeBarMashVPMod.Core.PushJudgementLine(line);
+                    Melon<Core>.Logger.Msg(line);
+                }
             }
         }
     }
 }
-
